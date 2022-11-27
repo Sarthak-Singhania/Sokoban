@@ -42,6 +42,9 @@ def runGame():
             print("Failed for level %d" % (current_level))
 
             current_level = current_level + 1
+            if current_level > 20:
+                print("No more levels")
+                sys.exit(0)
             initLevel(level_set, current_level)
 
 
