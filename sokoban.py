@@ -26,8 +26,8 @@ def runGame():
     global current_level
     current_level = 1
     global level_set
-    level_set = "own"
-    # level_set = "sir"
+    # level_set = "own"
+    level_set = "sir"
     initLevel(level_set, current_level)
     count = 0
 
