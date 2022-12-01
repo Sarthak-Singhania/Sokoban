@@ -54,8 +54,7 @@ class solver():
                 if successor.toString() in cache:
                     continue
                 action = action.lower() if cost_delta == 'Move' else action.upper()
-                old = action_map[successor.toString(
-                )] if successor.toString() in action_map else None
+                old = action_map[successor.toString()] if successor.toString() in action_map else None
                 if not old or len(old) > len(actions) + 1:
                     action_map[successor.toString()] = actions + action
                 successor.h = h(successor, self.cache)
@@ -105,26 +104,30 @@ def initLevel(level_set, level):
     myLevel = Level(level_set, level)
 
 
+def output(moves):
+    f = open('moves.txt', 'a+')
+    f.read()
+    f.write(moves+'\n')
+    f.close()
+
+
 def runGame():
     global current_level
     current_level = 1
     global level_set
-    # level_set = "own"
-    level_set = "sir"
+    level_set = "own"
+    # level_set = "sir"
     initLevel(level_set, current_level)
     count = 0
-
     old_level = current_level - 1
+    open('moves.txt', 'w').close()
     while old_level is current_level - 1:
         old_level = current_level
         moves = solve(myLevel)
         if moves != "":
             for move in moves:
                 movePlayer(move, myLevel)
-            f = open('moves.txt', 'a+')
-            f.read()
-            f.write(moves+'\n')
-            f.close()
+            output(moves)
         else:
             print("Failed for level %d" % (current_level))
 
