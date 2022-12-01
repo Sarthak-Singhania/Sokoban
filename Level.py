@@ -1,3 +1,16 @@
+"""
+Group 10: ENTHIRAN
+
+Group Members: 
+Sarthak Singhania: 2010110898
+Srikant Tripathi: 2010110770
+Siddharth Sahu: 2010110623
+Tushar Mishra: 2010110688
+Devanshi Goel: 2010110218
+"""
+
+
+
 import os
 import copy
 
