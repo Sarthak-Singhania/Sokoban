@@ -233,8 +233,9 @@ def runGame():
     global current_level
     current_level = 1
     global level_set
-    level_set = "own"
-    # level_set = "sir"
+
+    inp = input("Write 'sir' or 'own' to execute the respective levels: ")
+    level_set = inp
     initLevel(level_set, current_level)
     count = 0
     old_level = current_level - 1
@@ -268,5 +269,13 @@ def solve(myLevel):
 
 
 if __name__ == '__main__':
-    convert(input('Enter path to xsb file: '),input('Enter level directory name: '))
+    print(" ")
+    print("------------ SOKOBAN --------------")
+    print("""We have read the levels from testExamples.xsb, parsed it using level_parser.py file and 
+    stored all the levels in /levels/sir directory. """)
+    print(" ")
+    print("We also have some test levels of our own in /levels/own directory.")
+    print(" ")
+    print("The output is saved in moves.txt file")
+    
     runGame()
