@@ -150,5 +150,5 @@ def solve(myLevel):
 
 
 if __name__ == '__main__':
-    # convert(input('Enter path to xsb file: '))
+    convert(input('Enter path to xsb file: '),input('Enter level directory name: '))
     runGame()

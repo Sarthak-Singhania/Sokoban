@@ -1,13 +1,13 @@
 import os
-def convert(path):
+def convert(path,directory):
 	try:
 		f=open(path,'r')
 		level=1
-		level_file=open(os.path.dirname(os.path.abspath(__file__))+'\\sir'+"\\level"+str(level),'w')
+		level_file=open(os.path.dirname(os.path.abspath(__file__))+f'\\{directory}'+"\\level"+str(level),'w')
 		for i in f:
 			if 'example' in i.lower():
 				level_file.close()
-				level_file=open(os.path.dirname(os.path.abspath(__file__))+'\\sir'+"\\level"+str(level),'w')
+				level_file=open(os.path.dirname(os.path.abspath(__file__))+f'\\{directory}'+"\\level"+str(level),'w')
 				level+=1
 			else:
 				if i.strip()!='':
