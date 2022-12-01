@@ -32,6 +32,37 @@ class solver():
     global distance
     heuristic = distance(lambda a, b: abs(a[0] - b[0]) + abs(a[1] - b[1]))
 
+    def eucledian(self, arr, goal) :
+        distance = 0 
+        for i in range(3) :
+            for j in range(3) :
+                if (arr[i][j] == 0) :
+                    continue
+                if (arr[i][j] != goal[i][j]) :
+                    n=0
+                    m=0
+                    for y in range(3) :
+                        for z in range(3) :
+                            if (goal[y][z] == arr[i][j]) :
+                                n = y
+                                m = z
+                    n = pow(n-m,2)
+                    m = pow(i-j,2)
+                    while (n != 0 | m != 0) :
+                        if (n<0) :
+                            distance+=1
+                            n+=1;
+                        if (n>0) :
+                            distance+=1
+                            n-=1
+                        if (m<0) :
+                            distance+=1
+                            m+=1
+                        if (m>0) :
+                            distance+=1
+                            m-=1
+        return distance
+
     def refresh(self):
         self.cache = {}
 
@@ -61,12 +92,14 @@ class solver():
         return ("", 0)
 
 
-    def cost(self, actions):
-        return len([x for x in actions if x.islower()])
+    
     
     def uniformCostSearch(self, state):
         beginBox = state
         beginPlayer = state.getPlayerPosition()
+
+        def cost(self, actions):
+            return len([x for x in actions if x.islower()])
 
         startState = (beginPlayer, beginBox)
         frontier = PriorityQueue()
@@ -230,7 +263,7 @@ def solve(myLevel):
     moves_cache = solution.astar(
         myLevel.getMatrix())
     print("Level: %d, Moves: %s States Explored: %d" %
-          (current_level, moves_cache[0], moves_cache[1]))
+            (current_level, moves_cache[0], moves_cache[1]))
     return moves_cache[0]
 
 
