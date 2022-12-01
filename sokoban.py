@@ -26,7 +26,7 @@ def distance(method):
         targets = state.getTargets()
         total = 0
         key = (",".join([str(x[0]) + "-" + str(x[1]) for x in boxes]),
-                ",".join([str(x[0]) + "-" + str(x[1]) for x in targets]))
+               ",".join([str(x[0]) + "-" + str(x[1]) for x in targets]))
         if key in cache['min_distance']:
             total = cache['min_distance'][key]
         else:
@@ -44,41 +44,41 @@ class solver():
     global distance
     heuristic = distance(lambda a, b: abs(a[0] - b[0]) + abs(a[1] - b[1]))
 
-    def eucledian(self, arr, goal) :
-        distance = 0 
-        for i in range(3) :
-            for j in range(3) :
-                if (arr[i][j] == 0) :
+    def eucledian(self, arr, goal):
+        distance = 0
+        for i in range(3):
+            for j in range(3):
+                if (arr[i][j] == 0):
                     continue
-                if (arr[i][j] != goal[i][j]) :
-                    n=0
-                    m=0
-                    for y in range(3) :
-                        for z in range(3) :
-                            if (goal[y][z] == arr[i][j]) :
+                if (arr[i][j] != goal[i][j]):
+                    n = 0
+                    m = 0
+                    for y in range(3):
+                        for z in range(3):
+                            if (goal[y][z] == arr[i][j]):
                                 n = y
                                 m = z
-                    n = pow(n-m,2)
-                    m = pow(i-j,2)
-                    while (n != 0 | m != 0) :
-                        if (n<0) :
-                            distance+=1
-                            n+=1;
-                        if (n>0) :
-                            distance+=1
-                            n-=1
-                        if (m<0) :
-                            distance+=1
-                            m+=1
-                        if (m>0) :
-                            distance+=1
-                            m-=1
+                    n = pow(n-m, 2)
+                    m = pow(i-j, 2)
+                    while (n != 0 | m != 0):
+                        if (n < 0):
+                            distance += 1
+                            n += 1
+                        if (n > 0):
+                            distance += 1
+                            n -= 1
+                        if (m < 0):
+                            distance += 1
+                            m += 1
+                        if (m > 0):
+                            distance += 1
+                            m -= 1
         return distance
 
     def refresh(self):
         self.cache = {}
 
-    def astar(self, startState, maxCost=1000, cache={}):
+    def astar(self, startState, cache={}):
         h = solver.heuristic
         queue = PriorityQueue()
         action_map = {}
@@ -91,21 +91,21 @@ class solver():
             cache[state.toString()] = len(actions)
             if state.isSuccess():
                 return (actions, len(cache))
+            if len(action_map) > 600000:
+                return ("", 0)
             for (action, cost_delta) in state.getPossibleActions():
                 successor = state.successor(action)
                 if successor.toString() in cache:
                     continue
                 action = action.lower() if cost_delta == 'Move' else action.upper()
-                old = action_map[successor.toString()] if successor.toString() in action_map else None
+                old = action_map[successor.toString(
+                )] if successor.toString() in action_map else None
                 if not old or len(old) > len(actions) + 1:
                     action_map[successor.toString()] = actions + action
                 successor.h = h(successor, self.cache)
                 queue.update(successor, cost + 1 + successor.h - state.h)
         return ("", 0)
 
-
-    
-    
     def uniformCostSearch(self, state):
         beginBox = state
         beginPlayer = state.getPlayerPosition()
@@ -124,7 +124,7 @@ class solver():
             node = frontier.pop()
             node_action = actions.pop()
             if node[-1][-1].isSuccess():
-                solution = ','.join(node_action[1:]).replace(',','')
+                solution = ','.join(node_action[1:]).replace(',', '')
                 print(count)
                 return solution
                 # break
@@ -133,7 +133,8 @@ class solver():
                 Cost = cost(node_action[1:])
                 for action in node[-1][0].getPossibleActions():
                     count = count + 1
-                    newPosPlayer, newPosBox = frontier.update(node[-1][0], node[-1][1], action)
+                    newPosPlayer, newPosBox = frontier.update(
+                        node[-1][0], node[-1][1], action)
                     if newPosBox.isFailure():
                         continue
                     frontier.push(node + [(newPosPlayer, newPosBox)], Cost)
@@ -153,7 +154,7 @@ class solver():
             node = frontier.pop()
             node_action = actions.pop()
             if node[-1][-1].isSuccess():
-                solution = ','.join(node_action[1:]).replace(',','')
+                solution = ','.join(node_action[1:]).replace(',', '')
                 print(count)
                 return solution
                 # break
@@ -161,36 +162,44 @@ class solver():
                 exploredSet.add(node[-1])
                 for action in node[-1][0].getPossibleActions():
                     count = count + 1
-                    newPosPlayer, newPosBox = frontier.update(node[-1][0], node[-1][1], action)
+                    newPosPlayer, newPosBox = frontier.update(
+                        node[-1][0], node[-1][1], action)
                     if newPosBox.isFailure():
                         continue
                     frontier.append(node + [(newPosPlayer, newPosBox)])
                     actions.append(node_action + [action[-1]])
 
     def isFailed(state):
-        rotatePattern = [[0,1,2,3,4,5,6,7,8],
-                        [2,5,8,1,4,7,0,3,6],
-                        [0,1,2,3,4,5,6,7,8][::-1],
-                        [2,5,8,1,4,7,0,3,6][::-1]]
-        flipPattern = [[2,1,0,5,4,3,8,7,6],
-                        [0,3,6,1,4,7,2,5,8],
-                        [2,1,0,5,4,3,8,7,6][::-1],
-                        [0,3,6,1,4,7,2,5,8][::-1]]
+        rotatePattern = [[0, 1, 2, 3, 4, 5, 6, 7, 8],
+                         [2, 5, 8, 1, 4, 7, 0, 3, 6],
+                         [0, 1, 2, 3, 4, 5, 6, 7, 8][::-1],
+                         [2, 5, 8, 1, 4, 7, 0, 3, 6][::-1]]
+        flipPattern = [[2, 1, 0, 5, 4, 3, 8, 7, 6],
+                       [0, 3, 6, 1, 4, 7, 2, 5, 8],
+                       [2, 1, 0, 5, 4, 3, 8, 7, 6][::-1],
+                       [0, 3, 6, 1, 4, 7, 2, 5, 8][::-1]]
         allPattern = rotatePattern + flipPattern
 
         for box in state.getBoxes():
             if box not in state.getTargets():
                 board = [(box[0] - 1, box[1] - 1), (box[0] - 1, box[1]), (box[0] - 1, box[1] + 1),
-                        (box[0], box[1] - 1), (box[0], box[1]), (box[0], box[1] + 1),
-                        (box[0] + 1, box[1] - 1), (box[0] + 1, box[1]), (box[0] + 1, box[1] + 1)]
+                         (box[0], box[1] - 1), (box[0],
+                                                box[1]), (box[0], box[1] + 1),
+                         (box[0] + 1, box[1] - 1), (box[0] + 1, box[1]), (box[0] + 1, box[1] + 1)]
                 for pattern in allPattern:
                     newBoard = [board[i] for i in pattern]
-                    if newBoard[1] in state.getBoxes() and newBoard[5] in state: return True
-                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state and newBoard[5] in state: return True
-                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state and newBoard[5] in state.getBoxes(): return True
-                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state.getBoxes() and newBoard[5] in state.getBoxes(): return True
-                    elif newBoard[1] in state.getBoxes() and newBoard[6] in state.getBoxes() and newBoard[2] in state and newBoard[3] in state and newBoard[8] in state: return True
+                    if newBoard[1] in state.getBoxes() and newBoard[5] in state:
+                        return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state and newBoard[5] in state:
+                        return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state and newBoard[5] in state.getBoxes():
+                        return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state.getBoxes() and newBoard[5] in state.getBoxes():
+                        return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[6] in state.getBoxes() and newBoard[2] in state and newBoard[3] in state and newBoard[8] in state:
+                        return True
         return False
+
 
 class PriorityQueue:
     def __init__(self):
@@ -276,7 +285,7 @@ def solve(myLevel):
     moves_cache = solution.astar(
         myLevel.getMatrix())
     print("Level: %d, Moves: %s States Explored: %d" %
-            (current_level, moves_cache[0], moves_cache[1]))
+          (current_level, moves_cache[0], moves_cache[1]))
     return moves_cache[0]
 
 
@@ -289,5 +298,5 @@ if __name__ == '__main__':
     print("We also have some test levels of our own in /levels/own directory.")
     print(" ")
     print("The output is saved in moves.txt file")
-    
+
     runGame()
