@@ -1,5 +1,5 @@
+import collections
 import sys
-# import solver
 import heapq
 from Level import Level
 from levels.level_parser import convert
@@ -14,7 +14,7 @@ def distance(method):
         targets = state.getTargets()
         total = 0
         key = (",".join([str(x[0]) + "-" + str(x[1]) for x in boxes]),
-               ",".join([str(x[0]) + "-" + str(x[1]) for x in targets]))
+                ",".join([str(x[0]) + "-" + str(x[1]) for x in targets]))
         if key in cache['min_distance']:
             total = cache['min_distance'][key]
         else:
@@ -29,7 +29,6 @@ def distance(method):
 
 class solver():
     cache = {}
-    # costs = default
     global distance
     heuristic = distance(lambda a, b: abs(a[0] - b[0]) + abs(a[1] - b[1]))
 
@@ -61,6 +60,92 @@ class solver():
                 queue.update(successor, cost + 1 + successor.h - state.h)
         return ("", 0)
 
+
+    def cost(self, actions):
+        return len([x for x in actions if x.islower()])
+    
+    def uniformCostSearch(self, state):
+        beginBox = state
+        beginPlayer = state.getPlayerPosition()
+
+        startState = (beginPlayer, beginBox)
+        frontier = PriorityQueue()
+        frontier.push([startState], 0)
+        exploredSet = set()
+        actions = PriorityQueue()
+        actions.push([0], 0)
+        count = 0
+        while frontier:
+            node = frontier.pop()
+            node_action = actions.pop()
+            if node[-1][-1].isSuccess():
+                solution = ','.join(node_action[1:]).replace(',','')
+                print(count)
+                return solution
+                # break
+            if node[-1] not in exploredSet:
+                exploredSet.add(node[-1])
+                Cost = cost(node_action[1:])
+                for action in node[-1][0].getPossibleActions():
+                    count = count + 1
+                    newPosPlayer, newPosBox = frontier.update(node[-1][0], node[-1][1], action)
+                    if newPosBox.isFailure():
+                        continue
+                    frontier.push(node + [(newPosPlayer, newPosBox)], Cost)
+                    actions.push(node_action + [action[-1]], Cost)
+
+    def depthFirstSearch(self, state):
+        """Implement depthFirstSearch approach"""
+        beginBox = state
+        beginPlayer = state.getPlayerPosition()
+
+        startState = (beginPlayer, beginBox)
+        frontier = collections.deque([[startState]])
+        exploredSet = set()
+        actions = [[0]]
+        count = 0
+        while frontier:
+            node = frontier.pop()
+            node_action = actions.pop()
+            if node[-1][-1].isSuccess():
+                solution = ','.join(node_action[1:]).replace(',','')
+                print(count)
+                return solution
+                # break
+            if node[-1] not in exploredSet:
+                exploredSet.add(node[-1])
+                for action in node[-1][0].getPossibleActions():
+                    count = count + 1
+                    newPosPlayer, newPosBox = frontier.update(node[-1][0], node[-1][1], action)
+                    if newPosBox.isFailure():
+                        continue
+                    frontier.append(node + [(newPosPlayer, newPosBox)])
+                    actions.append(node_action + [action[-1]])
+
+    def isFailed(state):
+        rotatePattern = [[0,1,2,3,4,5,6,7,8],
+                        [2,5,8,1,4,7,0,3,6],
+                        [0,1,2,3,4,5,6,7,8][::-1],
+                        [2,5,8,1,4,7,0,3,6][::-1]]
+        flipPattern = [[2,1,0,5,4,3,8,7,6],
+                        [0,3,6,1,4,7,2,5,8],
+                        [2,1,0,5,4,3,8,7,6][::-1],
+                        [0,3,6,1,4,7,2,5,8][::-1]]
+        allPattern = rotatePattern + flipPattern
+
+        for box in state.getBoxes():
+            if box not in state.getTargets():
+                board = [(box[0] - 1, box[1] - 1), (box[0] - 1, box[1]), (box[0] - 1, box[1] + 1),
+                        (box[0], box[1] - 1), (box[0], box[1]), (box[0], box[1] + 1),
+                        (box[0] + 1, box[1] - 1), (box[0] + 1, box[1]), (box[0] + 1, box[1] + 1)]
+                for pattern in allPattern:
+                    newBoard = [board[i] for i in pattern]
+                    if newBoard[1] in state.getBoxes() and newBoard[5] in state: return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state and newBoard[5] in state: return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state and newBoard[5] in state.getBoxes(): return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[2] in state.getBoxes() and newBoard[5] in state.getBoxes(): return True
+                    elif newBoard[1] in state.getBoxes() and newBoard[6] in state.getBoxes() and newBoard[2] in state and newBoard[3] in state and newBoard[8] in state: return True
+        return False
 
 class PriorityQueue:
     def __init__(self):
